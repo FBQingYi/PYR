@@ -1,5 +1,6 @@
 import mc
 import time
+import json
 
 def qingyi_a(e):
     if '/give' in e["cmd"] and "[{n" in e["cmd"]:
@@ -75,21 +76,21 @@ def qingyi_cmdcomm(e):
                             jdata1 = jdata.replace('l', '"lvl2"')
                             player3.addItem('{"Count1": '+cmd[1]+',"Damage2":0,"Name8":"minecraft:'+cmd[0] +'","WasPickedUp1":0,"tag10":{"RepairCost3":3,"display10":{"Name8":"'+cmd[2]+'"},"ench9":'+jdata1+'}}')
                             player3.sendTextPacket('§g§l给予'+cmd[1] +'个 '+cmd[2] + ' 附魔物品成功！')
-                            mc.logout('ok')
+                            mc.logout('ok\n')
                             return False
                         elif '[{' in cmd[4]:
                             jdata = cmd[4].replace('n', '"id2"')
                             jdata1 = jdata.replace('l', '"lvl2"')
                             player3.addItem('{"Count1": '+cmd[1]+',"Damage2":'+cmd[3]+',"Name8":"minecraft:'+cmd[0] +'","WasPickedUp1":0,"tag10":{"RepairCost3":3,"display10":{"Name8":"'+cmd[2]+'"},"ench9":'+jdata1+'}}')
                             player3.sendTextPacket('§g§l给予'+cmd[1] +'个 '+cmd[2] + ' 附魔物品成功！')
-                            mc.logout('ok')
+                            mc.logout('ok\n')
                             return False
                     elif cmd[2] == 'addon':
                         jdata = cmd[4].replace('n', '"id2"')
                         jdata1 = jdata.replace('l', '"lvl2"')
                         player3.addItem('{"Count1": '+cmd[1]+',"Damage2":0,"Name8":"'+cmd[0] +'","WasPickedUp1":0,"tag10":{"RepairCost3":3,"display10":{"Name8":"'+cmd[3]+'"},"ench9":'+jdata1+'}}')
                         player3.sendTextPacket('§g§l给予'+cmd[1]+'个 '+cmd[3] + ' 附魔物品成功！')
-                        mc.logout('ok')
+                        mc.logout('ok\n')
                         return False
                 except Exception as e:
                     print(str(e))
@@ -97,36 +98,72 @@ def qingyi_cmdcomm(e):
             else:
                 cmd = e.split(' ')
                 try:
-                    print(cmd[1])
                     player3 = player(cmd[1])
-                    print('指针测试 ：玩家名字为：'+player3.name)
                     if player3 == 'off':
-                        mc.logout('玩家不在线！')
+                        mc.logout('玩家不在线！\n')
                     elif cmd[4] != 'addon':
                         if '[{' in cmd[5]:
-                            jdata = cmd[5].replace('n', '"id2"')
-                            jdata1 = jdata.replace('l', '"lvl2"')
-                            player3.addItem('{"Count1": '+cmd[3]+',"Damage2":0,"Name8":"minecraft:'+cmd[2] +'","WasPickedUp1":0,"tag10":{"RepairCost3":3,"display10":{"Name8":"'+cmd[4]+'"},"ench9":'+jdata1+'}}')
+                            jdata = cmd[5].replace('\x00','').replace('n','"id2"').replace('l','"lvl2"')
+                            ItemJson = {
+                            "Count1": int(cmd[3]),
+                            "Damage2":0,
+                            "Name8":"minecraft:"+cmd[2],
+                            "WasPickedUp1":0,
+                            "tag10":{
+                                "RepairCost3":3,
+                                "display10":{
+                                    "Name8":cmd[4]
+                                },
+                            "ench9":jdata
+                            }
+                        }
+                            player3.addItem(json.dumps(ItemJson))
                             player3.sendTextPacket('§g§l给予'+cmd[3] +'个 '+cmd[4] + ' 附魔物品成功！')
-                            mc.logout('ok')
+                            mc.logout('ok\n')
                             return False
                         elif '[{' in cmd[6]:
-                            jdata = cmd[6].replace('n', '"id2"')
-                            jdata1 = jdata.replace('l', '"lvl2"')
-                            player3.addItem('{"Count1": '+cmd[3]+',"Damage2":'+cmd[5]+',"Name8":"minecraft:'+cmd[2] +'","WasPickedUp1":0,"tag10":{"RepairCost3":3,"display10":{"Name8":"'+cmd[4]+'"},"ench9":'+jdata1+'}}')
+                            jdata = cmd[6].replace('\x00','').replace('n','"id2"').replace('l','"lvl2"')
+                            ItemJson = {
+                            "Count1": int(cmd[3]),
+                            "Damage2":int(cmd[4]),
+                            "Name8":"minecraft:"+cmd[2],
+                            "WasPickedUp1":0,
+                            "tag10":{
+                                "RepairCost3":3,
+                                "display10":{
+                                    "Name8":cmd[5]
+                                },
+                            "ench9":jdata
+                            }
+                        }
+                            player3.addItem(json.dumps(ItemJson))
                             player3.sendTextPacket('§g§l给予'+cmd[3] +'个 '+cmd[4] + ' 附魔物品成功！')
-                            mc.logout('ok')
+                            mc.logout('ok\n')
                             return False
                     elif cmd[4] == 'addon':
-                        jdata = cmd[6].replace('n', '"id2"')
-                        jdata1 = jdata.replace('l', '"lvl2"')
-                        player3.addItem('{"Count1": '+cmd[3]+',"Damage2":0,"Name8":"'+cmd[2] +'","WasPickedUp1":0,"tag10":{"RepairCost3":3,"display10":{"Name8":"'+cmd[5]+'"},"ench9":'+jdata1+'}}')
+                        jdata = cmd[6].replace('\x00','').replace('n','"id2"').replace('l','"lvl2"')
+                        ItemJson = {
+                            "Count1": int(cmd[3]),
+                            "Damage2":0,
+                            "Name8":cmd[2],
+                            "WasPickedUp1":0,
+                            "tag10":{
+                                "RepairCost3":3,
+                                "display10":{
+                                    "Name8":cmd[5]
+                                },
+                            "ench9":jdata
+                            }
+                        }
+                        player3.addItem(json.dumps(ItemJson))
                         player3.sendTextPacket('§g§l给予'+cmd[3]+'个 '+cmd[5] + ' 附魔物品成功！')
-                        mc.logout('ok')
+                        mc.logout('ok\n')
                         return False
                 except Exception as e:
                     print(str(e))
-                    mc.logout('格式错误')
+                    mc.logout('格式错误\n')
+
+                
                 return False
 
 def player(name):
